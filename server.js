@@ -1,41 +1,34 @@
-var express = require('express');
-var http = require('http');
-var app = express();
+var WebSocketServer = require('ws').Server
+  , http = require('http')
+  , express = require('express')
+  , app = express();
+
+app.use(express.static(__dirname + '/public'));
+
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
-server.listen(4000);
+server.listen(8080);
 
-app.get('/', function(request, response){
-  response.sendfile(__dirname + "/index.html");
-});
+var clients = [];
 
-app.get('/client.html', function(request, response){
-  response.sendfile(__dirname + "/client.html");
-});
-app.get('/client.js', function(request, response){
-  response.sendfile(__dirname + "/client.js");
-});
-app.get('/main.js', function(request, response){
-  response.sendfile(__dirname + "/main.js");
-});
+var wss = new WebSocketServer({server: server, clientTracking: false});
+wss.on('connection', function(ws) {
+  console.log("New connection: Nro Clients: " + clients.length);
+  clients.push(ws);
+  ws.on('message', function(data, flags) {
+    console.log("Mensaje recibido %s Flags %s", Date(), flags.binary);
 
-var activeClients = 0;
-
-
-io.sockets.on('connection', function(socket) {
-  clientConnect(socket)
-});
-
-function clientConnect(socket){
-  activeClients +=1;
-  io.sockets.emit('message', {clients:activeClients});
-  socket.on('disconnect', function(){clientDisconnect()});
-  socket.on('frame', function(data) {
-    io.sockets.emit('frame', data);
+    //Send to all clients
+    for (var i = 0; i < clients.length; i++) {
+      clients[i].send(data, {binary: true});
+    }
   });
-}
+  ws.on('close', function() {
+    var idx = clients.indexOf(ws);
+    if (idx > -1) {
+      console.log("-- deleting client: ");
+      delete clients[ws];
+    };
 
-function clientDisconnect(){
-  activeClients -=1;
-  io.sockets.emit('message', {clients:activeClients});
-}
+    console.log('[close]\n');
+  })
+});

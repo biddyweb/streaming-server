@@ -6,7 +6,7 @@
     "node": ">= 0.6.0"
   },
   "dependencies": {
-    "socket.io": "latest",
+    "ws": "latest",
     "express": ">= 3.0.0"
   }
 }

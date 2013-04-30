@@ -1,12 +1,11 @@
-//SOCKET IO PART!!!
-function msgReceived(msg){
-  $clientCounter.html(msg.clients);
-}
-
-$clientCounter = $("#client_count")
-
-var socket = io.connect('http://localhost:4000');
-socket.on('message', function(msg){msgReceived(msg)});
+var ws = new WebSocket('ws://localhost:8080');
+ws.binaryType = "arraybuffer";
+ws.onopen = function() {
+  console.log("Connection ready");
+};
+ws.onmessage = function(event) {
+  console.log("Llego algo desde el server");
+};
 
 
 //WEBRTC Part
@@ -41,7 +40,19 @@ navigator.getUserMedia(constraints, successCallback, errorCallback);
 function drawVideoFrame(time) {
   rafId = requestAnimationFrame(drawVideoFrame);
   ctx.drawImage(video, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  socket.emit('frame', {frame: canvas.toDataURL('image/webp', 1)});
+  //socket.emit('frame', {frame: canvas.toDataURL('image/webp', 1)});
+  if (typeof ws != 'undefined' ) {
+    var imagedata = ctx.getImageData(0,0,CANVAS_WIDTH, CANVAS_HEIGHT).data;
+    
+    var canvaslen = imagedata.length;
+    var bytearray = new Uint8Array(canvaslen)
+    for (var i=0;i<canvaslen;++i) {
+        bytearray[i] = imagedata[i];
+    }
+    ws.send(bytearray.buffer);
+  } else {
+    console.log("Can't stream");
+  }
 };
 
 rafId = requestAnimationFrame(drawVideoFrame); // Note: not using vendor prefixes!
