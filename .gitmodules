@@ -1,0 +1,3 @@
+[submodule "lynckia"]
+	path = lynckia
+	url = git@github.com:peepoltv/lynckia.git
