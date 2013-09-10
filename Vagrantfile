@@ -7,6 +7,12 @@ Vagrant.configure("2") do |config|
 
   config.vm.network :public_network
 
-  config.vm.provision :puppet
+  config.vm.network :forwarded_port, guest: 8080, host: 8180
+
+  config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "puppet/manifests"
+    puppet.module_path    = "puppet/modules"
+    puppet.options = ['--verbose']
+  end
 
 end
