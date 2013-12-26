@@ -1,14 +1,13 @@
-root_dir = "/opt/streaming-server"
-licode_dir = File.join root_dir, "licode"
-erizo_controller_dir = File.join licode_dir, "erizo_controller"
-erizo_dir = File.join licode_dir, "erizo"
-nuve_dir = File.join licode_dir, "nuve"
-pid_dir = File.join root_dir, "pids"
-log_dir = File.join root_dir, "logs"
+root_dir              = "/opt/streaming-server"
+licode_dir            = File.join root_dir, "licode"
+erizo_controller_dir  = File.join licode_dir, "erizo_controller", "erizoController"
+nuve_dir              = File.join licode_dir, "nuve", "nuveAPI"
+erizo_dir             = File.join licode_dir, "erizo"
 
-ld_library_path = "$LD_LIBRARY_PATH:#{licode_dir}/erizo/build/erizo:#{licode_dir}/erizo:#{licode_dir}/build/libdeps/build/lib"
+pid_dir               = File.join root_dir, "pids"
+log_dir               = File.join root_dir, "logs"
 
-Bluepill.application("licode", :log_file => File.join(log_dir, "licode.log")) do |app|
+Bluepill.application("licode", :log_file => File.join(log_dir, "licode.bluepill.log")) do |app|
 
   app.uid = app.gid = "deploy"
 
@@ -19,11 +18,12 @@ Bluepill.application("licode", :log_file => File.join(log_dir, "licode.log")) do
     process.daemonize = true
 
     process.environment = {
-      'LD_LIBRARY_PATH' => ld_library_path,
+      'LD_LIBRARY_PATH' => "$LD_LIBRARY_PATH:#{licode_dir}/erizo/build/erizo:#{licode_dir}/erizo:#{licode_dir}/build/libdeps/build/lib",
       'ERIZO_HOME' => "ERIZO_HOME=#{erizo_dir}/"
     }
 
-    process.start_command = "node erizoController/erizoController.js"
+    process.start_command = "node erizoController.js"
+    process.stdout = process.stderr = File.join(log_dir, "erizoController.log")
 
     process.start_grace_time = 8.seconds
     process.stop_grace_time = 5.seconds
@@ -37,7 +37,8 @@ Bluepill.application("licode", :log_file => File.join(log_dir, "licode.log")) do
     process.pid_file = File.join(pid_dir, "nuve.pid")
     process.daemonize = true
 
-    process.start_command = "node nuveAPI/nuve.js"
+    process.start_command = "node nuve.js"
+    process.stdout = process.stderr = File.join(log_dir, "nuve.log")
 
     process.start_grace_time = 8.seconds
     process.stop_grace_time = 5.seconds
