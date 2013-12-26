@@ -1,3 +1,5 @@
 .vagrant
 licode_config.js
+logs/*
+pids/*
 
