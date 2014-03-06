@@ -10,3 +10,6 @@
 [submodule "puppet/modules/stdlib"]
 	path = puppet/modules/stdlib
 	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
+[submodule "transcoding-service"]
+	path = transcoding-service
+	url = https://github.com/peepoltv/transcoding-service.git
