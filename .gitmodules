@@ -1,6 +1,6 @@
 [submodule "licode"]
 	path = licode
-	url = git://github.com/peepoltv/licode.git
+	url = git://github.com/rhinobird/licode.git
 [submodule "puppet/modules/apt"]
 	path = puppet/modules/apt
 	url = git://github.com/c00w/puppet-apt.git
@@ -12,4 +12,4 @@
 	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
 [submodule "transcoding-service"]
 	path = transcoding-service
-	url = https://github.com/peepoltv/transcoding-service.git
+	url = https://github.com/rhinobird/transcoding-service.git
