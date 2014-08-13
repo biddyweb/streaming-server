@@ -14,5 +14,5 @@ Vagrant.configure("2") do |config|
   #  puppet.module_path    = "puppet/modules"
   #  puppet.options = ['--verbose']
   #end
-
+  config.vm.synced_folder "../transcoding-service/", "/opt/transcoding"
 end
