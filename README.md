@@ -1,16 +1,27 @@
 streaming-server
 ================
 
-# For an Amazon deployment.
+# For Amazon deployment.
 
-The licode_config.js should set cloudProvider like this.
+licode_config.js should be at least configured with this options
 
 ```javascript
-config.cloudProvider.name = 'amazon';
-//In Amazon Ec2 instances you can specify the zone host. By default is 'ec2.us-east-1a.amazonaws.com'
-config.cloudProvider.host = ''// 'ec2.us-east-1.amazonaws.com';
-config.cloudProvider.accessKey = 'XXXXXXXXX';
-config.cloudProvider.secretAccessKey = 'XXXXXXXX';
+// Use '' to automatically get IP from the interface
+config.erizoController.publicIP = '54.235.204.77'; //default value: ''
+// Use '' to use the public IP address instead of a hostname
+config.erizoController.hostname = 'turing.rhinobird.tv'; //default value: ''
+config.erizoController.port = 443; //default value: 8080
+// Use true if clients communicate with erizoController over SSL
+config.erizoController.ssl = true; //default value: false
+
+//Use undefined to run clients without Turn
+config.erizoController.turnServer = {}; // default value: undefined
+config.erizoController.turnServer.url = 'turn:54.235.204.77:5349'; // default value: null
+config.erizoController.turnServer.username = 'USERNAME'; // default value: null
+config.erizoController.turnServer.password = 'PASSWORD'; // default value: null
+
+config.erizo.stunserver = '54.235.204.77'; // default value: ''
+config.erizo.stunport = 5349; // default value: 0
 ```
 
 For the access keys, you can add a user on the IAM aws console with the `AmazonEC2ReadOnlyAccess` permission
@@ -55,3 +66,16 @@ cert=/home/user/server.crt
 pkey=/home/user/server.key
 ```
 
+## Updating Licode server
+It's best to make a volume snapshot to rollback easly
+
+Update the git submodule(`rhinobird/licode` should be already updated with latest changes)
+
+```bash
+git submodule update
+cd licode
+git pull origin master
+cd ..
+git add licode
+git ci -m "chore(licode): Updated licode submodule"
+```
