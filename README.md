@@ -9,7 +9,7 @@ licode_config.js should be at least configured with this options
 // Use '' to automatically get IP from the interface
 config.erizoController.publicIP = '54.235.204.77'; //default value: ''
 // Use '' to use the public IP address instead of a hostname
-config.erizoController.hostname = 'turing.rhinobird.tv'; //default value: ''
+config.erizoController.hostname = 'streaming-beta.rhinobird.tv'; //default value: ''
 config.erizoController.port = 443; //default value: 8080
 // Use true if clients communicate with erizoController over SSL
 config.erizoController.ssl = true; //default value: false
@@ -79,3 +79,16 @@ cd ..
 git add licode
 git ci -m "chore(licode): Updated licode submodule"
 ```
+
+Then compile licode (Best to remove licode folder before recompiling `rm -rf licode; git submodule update;`)
+
+```bash
+cd licode
+./scripts/installErizo.sh
+./scripts/installNuve.sh
+```
+
+Copy the erizo.js to update `angular-licode`'s vendor version, it should be under `$licode_home/erizo_controller/erizoClient/dist`
+
+Make sure to update the service ID and Key in the API project in `.rbenv-vars`
+Verify that the roles in licode_config uses the updated suggested [config](http://lynckia.com/licode/roles-update.html)
